@@ -7,6 +7,8 @@ class CommentObj {
   String comment = "";
   String date;
   String commentRef;
+  String reason;
+  int no_reports;
 
   CommentObj({
     @required this.username,
@@ -15,5 +17,7 @@ class CommentObj {
     @required this.comment,
     @required this.date,
     @required this.commentRef,
+    @required this.reason,
+    @required this.no_reports,
   });
 }

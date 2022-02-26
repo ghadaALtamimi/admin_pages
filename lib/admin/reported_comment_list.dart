@@ -58,9 +58,9 @@ class CommentListState extends State<ReportedCommentList> {
   getData() {
     // get data from database
     databaseRef = FirebaseFirestore.instance
-        .collection("users")
-        .doc("7DNb5UkMjxVeMmY1Q7vPebXzdk73")
-        .collection("comments");
+        .collection("admin")
+        .doc("reportes")
+        .collection("ReportedComment");
     setState(() {});
     databaseRef.snapshots().listen((data) {
       comments.clear();
@@ -69,7 +69,7 @@ class CommentListState extends State<ReportedCommentList> {
 
       data.docs.forEach((doc) {
         //int s = 1;
-        autherId = doc["recipeAuther"];
+        // autherId = doc["recipeAuther"];
         recipeId = doc["recipeId"];
         // print(doc["username"]);
         // print(doc["imageUrl"]);
@@ -82,6 +82,8 @@ class CommentListState extends State<ReportedCommentList> {
           comment: doc["commentText"],
           date: doc["commentDate"],
           commentRef: doc["commentRef"],
+          reason: doc["reason"],
+          no_reports: doc["no_reports"],
         ));
       });
       if (this.mounted) {
@@ -106,8 +108,8 @@ class CommentListState extends State<ReportedCommentList> {
     print("-----------inside method_");
     print(key);
     await FirebaseFirestore.instance
-        .collection("users")
-        .doc(autherId)
+        // .collection("users")
+        // .doc(autherId)
         .collection("recipes")
         .doc(recipeId)
         .collection("comments")
@@ -115,9 +117,9 @@ class CommentListState extends State<ReportedCommentList> {
         .delete();
 
     await FirebaseFirestore.instance
-        .collection("users")
-        .doc("7DNb5UkMjxVeMmY1Q7vPebXzdk73")
-        .collection("comments")
+        .collection("admin")
+        .doc("reportes")
+        .collection("ReportedComment")
         .doc(key)
         .delete();
   }
@@ -143,6 +145,13 @@ class CommentListState extends State<ReportedCommentList> {
   Widget designComment(CommentObj comment) => Container(
         child: Column(
           children: [
+            Align(
+                alignment: Alignment.bottomLeft,
+                child: Padding(
+                  padding:
+                      const EdgeInsets.only(left: 50.0, right: 30, top: 10),
+                  child: Text(comment.reason),
+                )),
             Row(
               children: [
                 UserInformationDesign(
@@ -151,7 +160,7 @@ class CommentListState extends State<ReportedCommentList> {
                 ),
                 Padding(
                     padding: const EdgeInsets.only(left: 10),
-                    child: Text(comment.date,
+                    child: Text("${comment.date}",
                         style: TextStyle(color: Colors.grey))),
                 //************************************ */
                 SizedBox(
@@ -191,7 +200,9 @@ class CommentListState extends State<ReportedCommentList> {
                                     color: Colors.red,
                                   )),
                             ),
-                            Text('Delete'),
+                            Icon(Icons.report),
+                            Text("${comment.no_reports}"),
+                            //Text('Delete'),
                           ],
                         ),
                       ],
