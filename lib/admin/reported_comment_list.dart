@@ -145,13 +145,6 @@ class CommentListState extends State<ReportedCommentList> {
   Widget designComment(CommentObj comment) => Container(
         child: Column(
           children: [
-            Align(
-                alignment: Alignment.bottomLeft,
-                child: Padding(
-                  padding:
-                      const EdgeInsets.only(left: 50.0, right: 30, top: 10),
-                  child: Text(comment.reason),
-                )),
             Row(
               children: [
                 UserInformationDesign(
@@ -200,8 +193,7 @@ class CommentListState extends State<ReportedCommentList> {
                                     color: Colors.red,
                                   )),
                             ),
-                            Icon(Icons.report),
-                            Text("${comment.no_reports}"),
+
                             //Text('Delete'),
                           ],
                         ),
@@ -216,10 +208,29 @@ class CommentListState extends State<ReportedCommentList> {
             Align(
                 alignment: Alignment.bottomLeft,
                 child: Padding(
-                  padding: const EdgeInsets.only(
-                      left: 40.0, bottom: 10, right: 30, top: 10),
+                  padding:
+                      const EdgeInsets.only(left: 30.0, right: 30, top: 10),
                   child: Text(comment.comment),
                 )),
+            Divider(
+              thickness: 1,
+              indent: 20,
+              endIndent: 20,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(
+                left: 60,
+              ),
+              child: Row(
+                children: [
+                  Text("reason: " + comment.reason),
+                  SizedBox(
+                    width: 20,
+                  ),
+                  Text("number of reports: " + "${comment.no_reports}"),
+                ],
+              ),
+            ),
             Divider(
               height: 20,
               thickness: 1,
