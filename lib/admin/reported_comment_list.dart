@@ -14,39 +14,10 @@ class ReportedCommentList extends StatefulWidget {
 class CommentListState extends State<ReportedCommentList> {
   List<CommentObj> comments = [];
   CollectionReference databaseRef;
-  static String autherId = "";
-  static String recipeId = "";
+  static String autherId;
+  static String recipeId;
   @override
   Widget build(BuildContext context) {
-    // ----------------------------------
-    // databaseRef = FirebaseFirestore.instance
-    //     .collection("users")
-    //     .doc(widget.authorId)
-    //     .collection("recpies")
-    //     .doc(widget.recipeID)
-    //     .collection("comments");
-
-    // databaseRef.snapshots().listen((data) {
-    //   data.docs.forEach((doc) {
-    //     //int s = 1;
-
-    //     bool enter = true;
-    //     if (enter) {
-    //       print(doc["username"]);
-    //       print(doc["imageUrl"]);
-    //       print(doc["comment"]);
-    //       comments.add(commentState(
-    //           username: doc["username"],
-    //           commentImgUrl: doc["imageUrl"],
-    //           comment: doc["comment"]));
-    //     }
-    //     print('@@@@@@@@@@@@@@@@@@@@');
-    //     print(comments[0].username);
-    //     enter = false;
-    //   });
-    // });
-    // --------
-
     return ListView(
         shrinkWrap: true,
         padding: EdgeInsets.all(12),
@@ -64,25 +35,21 @@ class CommentListState extends State<ReportedCommentList> {
     setState(() {});
     databaseRef.snapshots().listen((data) {
       comments.clear();
-      //setState(() {
-      // clear duplicate comments.
 
       data.docs.forEach((doc) {
-        //int s = 1;
-        // autherId = doc["recipeAuther"];
         recipeId = doc["recipeId"];
-        // print(doc["username"]);
-        // print(doc["imageUrl"]);
-        // print(doc["comment"]);
+
         // add each comment doc in database to the list to show them in the screen
         print(doc["commentOwner"]);
         comments.add(CommentObj(
-          username: doc["commentOwner"],
-          commentImgUrl: doc["imageURLComment"],
-          comment: doc["commentText"],
-          date: doc["commentDate"],
+          commentOwner: doc["commentOwner"],
+          commentText: doc["commentText"],
+          commentDate: doc["commentDate"],
           commentRef: doc["commentRef"],
-          reason: doc["reason"],
+          unethical: doc["unethical"],
+          IDontLike: doc["IDontLike"],
+          fraudulent: doc["fraudulent"],
+          bullying: doc["bullying"],
           no_reports: doc["no_reports"],
         ));
       });
@@ -91,9 +58,6 @@ class CommentListState extends State<ReportedCommentList> {
           comments;
         });
       }
-      // print('###');
-      // print(comments[0].username);
-      //});
     });
   }
 
@@ -108,8 +72,6 @@ class CommentListState extends State<ReportedCommentList> {
     print("-----------inside method_");
     print(key);
     await FirebaseFirestore.instance
-        // .collection("users")
-        // .doc(autherId)
         .collection("recipes")
         .doc(recipeId)
         .collection("comments")
@@ -147,36 +109,29 @@ class CommentListState extends State<ReportedCommentList> {
           children: [
             Row(
               children: [
-                UserInformationDesign(
-                  comment.username,
-                  comment.commentImgUrl,
+                Padding(
+                  padding: const EdgeInsets.only(left: 40),
+                  child: Text(
+                    comment.commentOwner,
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                  ),
                 ),
+
                 Padding(
                     padding: const EdgeInsets.only(left: 10),
-                    child: Text("${comment.date}",
+                    child: Text("${comment.commentDate}",
                         style: TextStyle(color: Colors.grey))),
                 //************************************ */
                 SizedBox(
                   width: 20,
                 ),
-                // InkWell(
-                //     onTap: () {},
-                //     child: Icon(
-                //       Icons.flag_outlined,
-                //       color: Colors.black,
-                //     )),
 
                 InkWell(
                   onTap: () {
-                    // var comkey = snapshot Key;
-                    // print(comkey);
-                    // // userDirections.length > 1 to prevent deleting the field if there is only one field
-                    // _DeletFirestoreComment(comkey);
-                    // refresh the screen
                     print("--------------------------");
                     print(comment.commentRef);
                     _DeletFirestoreComment(comment.commentRef);
-                    // setState(() {});
+
                     AlertDialog(
                       title: Text("Are you sure to delete the comment ?"),
                       actions: [
@@ -210,7 +165,7 @@ class CommentListState extends State<ReportedCommentList> {
                 child: Padding(
                   padding:
                       const EdgeInsets.only(left: 30.0, right: 30, top: 10),
-                  child: Text(comment.comment),
+                  child: Text(comment.commentText),
                 )),
             Divider(
               thickness: 1,
@@ -223,11 +178,32 @@ class CommentListState extends State<ReportedCommentList> {
               ),
               child: Row(
                 children: [
-                  Text("reason: " + comment.reason),
+                  Text("number of reports: " + "${comment.no_reports}"),
                   SizedBox(
                     width: 20,
                   ),
-                  Text("number of reports: " + "${comment.no_reports}"),
+                  Text("bullying: " + " ${comment.bullying}"),
+                ],
+              ),
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(
+                left: 40,
+              ),
+              child: Row(
+                children: [
+                  Text("fraudulent: " + "${comment.fraudulent}"),
+                  SizedBox(
+                    width: 20,
+                  ),
+                  Text("do not like: " + " ${comment.IDontLike}"),
+                  SizedBox(
+                    width: 20,
+                  ),
+                  Text("unethical: " + " ${comment.unethical}"),
                 ],
               ),
             ),

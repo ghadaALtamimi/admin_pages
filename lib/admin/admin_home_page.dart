@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:instayum_admin/admin/reported_account_list.dart';
 
 import 'package:instayum_admin/admin/reported_comment_list.dart';
 import 'package:instayum_admin/auth_screen.dart';
@@ -136,7 +137,7 @@ class AdminHomePageState extends State<AdminHomePage> {
                   ReportedCommentList(),
 
                   // ------------ reported account-----------.
-                  Center(child: Text("data"))
+                  ReportedAccountList(),
 
                   // bookmarked_recipes(),
                 ],

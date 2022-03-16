@@ -1,23 +1,28 @@
 import 'package:flutter/material.dart';
 
 class CommentObj {
-  String username = "";
-  String userId = "";
-  String commentImgUrl = "";
-  String comment = "";
-  String date;
   String commentRef;
-  String reason;
+  String commentOwner;
+  String recipeId;
+  String commentDate;
+  String commentText;
+  int bullying;
+  int fraudulent;
+  int unethical;
+  int IDontLike;
   int no_reports;
-
+  List<String> user_already_reported;
   CommentObj({
-    @required this.username,
-    @required this.userId,
-    @required this.commentImgUrl,
-    @required this.comment,
-    @required this.date,
-    @required this.commentRef,
-    @required this.reason,
-    @required this.no_reports,
+    this.commentRef,
+    this.commentOwner,
+    this.recipeId,
+    this.commentDate,
+    this.commentText,
+    this.bullying,
+    this.fraudulent,
+    this.unethical,
+    this.IDontLike,
+    this.no_reports,
+    this.user_already_reported,
   });
 }
