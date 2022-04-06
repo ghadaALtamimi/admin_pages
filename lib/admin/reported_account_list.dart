@@ -117,7 +117,7 @@ class ReportedAccountListState extends State<ReportedAccountList> {
                   width: 60,
                 ),
                 Text(
-                  "number of reports: " + "${account.no_reports}",
+                  "Number of reports: " + "${account.no_reports}",
                   style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
                 ),
 
@@ -138,11 +138,11 @@ class ReportedAccountListState extends State<ReportedAccountList> {
               ),
               child: Row(
                 children: [
-                  Text("bullying: " + " ${account.bullying}"),
+                  Text("Bullying: " + " ${account.bullying}"),
                   SizedBox(
                     width: 20,
                   ),
-                  Text("fraudulent: " + "${account.fraudulent}"),
+                  Text("Fraudulent: " + "${account.fraudulent}"),
                 ],
               ),
             ),
@@ -155,11 +155,11 @@ class ReportedAccountListState extends State<ReportedAccountList> {
               ),
               child: Row(
                 children: [
-                  Text("do not like: " + " ${account.IDontLike}"),
+                  Text("Do not like: " + " ${account.IDontLike}"),
                   SizedBox(
                     width: 20,
                   ),
-                  Text("unethical: " + " ${account.unethical}"),
+                  Text("Unethical: " + " ${account.unethical}"),
                 ],
               ),
             ),
