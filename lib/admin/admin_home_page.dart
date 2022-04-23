@@ -11,6 +11,7 @@ class AdminHomePage extends StatefulWidget {
 }
 
 class AdminHomePageState extends State<AdminHomePage> {
+  static bool inIgnored = false;
   showAlertDialog(BuildContext context) {
     // set up the buttons
     Widget noButton = RaisedButton(
@@ -80,31 +81,39 @@ class AdminHomePageState extends State<AdminHomePage> {
         backgroundColor: Color(0xFFeb6d44),
         leading: Container(child: Image.asset("assets/images/logo.png")),
         actions: [
-          DropdownButton(
-            icon: Icon(
-              Icons.more_vert,
-              color: Theme.of(context).primaryIconTheme.color,
-            ),
-            items: [
-              DropdownMenuItem(
-                child: Row(
-                  children: <Widget>[
-                    Icon(Icons.exit_to_app,
-                        color: Colors.black), // change the color
-                    SizedBox(width: 2),
-                    Text("Logout"),
-                  ],
-                ),
-                value: "logout",
-              ),
-            ],
-            onChanged: (itemIdentifier) {
-              if (itemIdentifier == "logout") {
-                print("cliked in logout");
+          //-------------------------------
+          IconButton(
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (ccontext) => Scaffold(
+                        appBar: AppBar(
+                            title: Text("dd"),
+                            backgroundColor: Color(0xFFeb6d44),
+                            leading: IconButton(
+                              onPressed: () {
+                                inIgnored = false;
+
+                                Navigator.pop(context);
+                                // setState(() {});
+                              },
+                              icon: Icon(Icons.arrow_back),
+                            )),
+                        body: ignoredReports(),
+                      ),
+                    ));
+              },
+              icon: Icon(Icons.warning)),
+          //---------------------------------------
+          IconButton(
+              onPressed: () {
                 showAlertDialog(context);
-              }
-            },
-          )
+              },
+              icon: Icon(
+                Icons.logout,
+                color: Theme.of(context).primaryIconTheme.color,
+              )),
         ],
       ),
       body: DefaultTabController(
@@ -145,6 +154,46 @@ class AdminHomePageState extends State<AdminHomePage> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  DefaultTabController ignoredReports() {
+    inIgnored = true;
+    return DefaultTabController(
+      length: 2,
+      // allows you to build a list of elements that would be scrolled away till the body reached the top
+
+      // You tab view goes here and its bar view
+      child: Column(
+        children: <Widget>[
+          //
+          TabBar(
+            labelStyle: TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
+            labelColor: Color(0xFFeb6d44),
+            indicatorColor: Color(0xFFeb6d44),
+            tabs: [
+              Tab(icon: Icon(Icons.comment), text: ("Ignored Reprted Comment")),
+              Tab(
+                  icon: Icon(Icons.account_box),
+                  text: ("Ignored Reported Account")),
+            ],
+          ),
+          Expanded(
+            child: TabBarView(
+              children: [
+                //This list is the content of each tab.
+                // ------------ reported comment-------------
+                ReportedCommentList(),
+
+                // ------------ reported account-----------.
+                ReportedAccountList(),
+
+                // bookmarked_recipes(),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

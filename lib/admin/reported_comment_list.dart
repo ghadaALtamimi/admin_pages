@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:instayum_admin/admin/admin_home_page.dart';
 
 import 'package:instayum_admin/admin/comment_obj.dart';
 import 'package:instayum_admin/admin/user_information_design.dart';
@@ -13,17 +14,29 @@ class ReportedCommentList extends StatefulWidget {
 
 class CommentListState extends State<ReportedCommentList> {
   List<CommentObj> comments = [];
+
+  List<CommentObj> ignoredComments = [];
+
   CollectionReference databaseRef;
   static String autherId;
   static String recipeId;
   @override
   Widget build(BuildContext context) {
-    return ListView(
-        shrinkWrap: true,
-        padding: EdgeInsets.all(12),
-        children: [
-          ...comments.map(designComment).toList(),
-        ].reversed.toList());
+    if (AdminHomePageState.inIgnored) {
+      return ListView(
+          shrinkWrap: true,
+          padding: EdgeInsets.all(12),
+          children: [...ignoredComments.map(designComment).toList()]
+              .reversed
+              .toList());
+    } else {
+      return ListView(
+          shrinkWrap: true,
+          padding: EdgeInsets.all(12),
+          children: [
+            ...comments.map(designComment).toList(),
+          ].reversed.toList());
+    }
   }
 
   getData() {
@@ -35,27 +48,46 @@ class CommentListState extends State<ReportedCommentList> {
     setState(() {});
     databaseRef.snapshots().listen((data) {
       comments.clear();
-
+      ignoredComments.clear();
       data.docs.forEach((doc) {
         recipeId = doc["recipeId"];
 
         // add each comment doc in database to the list to show them in the screen
         print(doc["commentOwner"]);
-        comments.add(CommentObj(
-          commentOwner: doc["commentOwner"],
-          commentText: doc["commentText"],
-          commentDate: doc["commentDate"],
-          commentRef: doc["commentRef"],
-          unethical: doc["unethical"],
-          IDontLike: doc["IDontLike"],
-          fraudulent: doc["fraudulent"],
-          bullying: doc["bullying"],
-          no_reports: doc["no_reports"],
-        ));
+        if (doc["Ignore"] == false) {
+          comments.add(CommentObj(
+            commentOwner: doc["commentOwner"],
+            commentText: doc["commentText"],
+            commentDate: doc["commentDate"],
+            commentRef: doc["commentRef"],
+            unethical: doc["unethical"],
+            IDontLike: doc["IDontLike"],
+            fraudulent: doc["fraudulent"],
+            bullying: doc["bullying"],
+            no_reports: doc["no_reports"],
+            Ignore: false,
+            reason: "",
+          ));
+        } else {
+          ignoredComments.add(CommentObj(
+            commentOwner: doc["commentOwner"],
+            commentText: doc["commentText"],
+            commentDate: doc["commentDate"],
+            commentRef: doc["commentRef"],
+            unethical: doc["unethical"],
+            IDontLike: doc["IDontLike"],
+            fraudulent: doc["fraudulent"],
+            bullying: doc["bullying"],
+            no_reports: doc["no_reports"],
+            Ignore: false,
+            reason: doc["reson"],
+          ));
+        }
       });
       if (this.mounted) {
         setState(() {
           comments;
+          ignoredComments;
         });
       }
     });
@@ -86,19 +118,138 @@ class CommentListState extends State<ReportedCommentList> {
         .delete();
   }
 
+  Widget IgnoreComment(var key, BuildContext context) {
+    print("-----------inside method_");
+    print(key);
+//------------------------------
+
+    String resone;
+
+    return Column(
+      children: [
+        TextFormField(
+          onChanged: (value) {
+            resone = value;
+          },
+        ),
+        //--------------------------add or cancel
+        SizedBox(
+          height: 30,
+        ),
+        Row(
+          children: [
+            RaisedButton(
+              color: Colors.white,
+              shape: RoundedRectangleBorder(
+                side:
+                    BorderSide(color: Theme.of(context).accentColor, width: 2),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Text(
+                "Cancel",
+                style: TextStyle(
+                  color: Colors.orange,
+                ),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            SizedBox(
+              width: 5,
+            ),
+            RaisedButton(
+                child: Text(
+                  "Ignore",
+                ),
+                onPressed: () {
+                  // check if the ingredient is already exist do not add it to the shooping
+                  if (resone == null) {
+                    Navigator.pop(context);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                          content: Text("you did not write reason to ignore"),
+                          backgroundColor: Theme.of(context).errorColor),
+                    );
+                  } else {
+                    // -------- Add the ingredant to the shoping list------------
+
+                    // ------ Update ---------------
+                    FirebaseFirestore.instance
+                        .collection("admin")
+                        .doc("reportes")
+                        .collection("ReportedComment")
+                        .doc(key)
+                        .update({
+                      "Ignore": true,
+                      "reson": resone,
+                    });
+//-----
+                    Navigator.pop(context);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                          content: Text("Comment ignored successfuly"),
+                          backgroundColor: Colors.green),
+                    );
+                  }
+                }),
+            // ]);
+          ],
+        )
+      ],
+    );
+
+//------------------------------
+  }
+
   Widget repordelIcon(String commentRef) {
     final FirebaseAuth usId = FirebaseAuth.instance;
     final _currentUser = usId.currentUser.uid;
 
-    return IconButton(
-        onPressed: () {
-          _DeletFirestoreComment(commentRef);
-        },
-        icon: Icon(
-          Icons.delete_outline,
-          size: 20,
-          color: Colors.red,
-        ));
+    return !AdminHomePageState.inIgnored
+        ? Row(
+            children: [
+              IconButton(
+                  onPressed: () {
+                    _DeletFirestoreComment(commentRef);
+                  },
+                  icon: Icon(
+                    Icons.delete_outline,
+                    size: 20,
+                    color: Colors.red,
+                  )),
+              TextButton(
+                  onPressed: () {
+                    showDialog(
+                        barrierDismissible: false,
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            title: Column(
+                              children: [
+                                Text('write the reason of ignoring'),
+                                SizedBox(
+                                  height: 20,
+                                ),
+                                IgnoreComment(commentRef, context),
+                                SizedBox(
+                                  height: 20,
+                                ),
+                              ],
+                            ),
+                          );
+                        });
+                  },
+                  child: Text(
+                    "Ignore",
+                    style: TextStyle(
+                      color: Color(0xFFeb6d44),
+                      fontSize: 14,
+                    ),
+                  ))
+            ],
+          )
+        : SizedBox();
   }
 
 //********************************************************* */
@@ -123,7 +274,7 @@ class CommentListState extends State<ReportedCommentList> {
                         style: TextStyle(color: Colors.grey))),
                 //************************************ */
                 SizedBox(
-                  width: 20,
+                  width: 10,
                 ),
 
                 InkWell(
@@ -207,6 +358,23 @@ class CommentListState extends State<ReportedCommentList> {
                 ],
               ),
             ),
+            SizedBox(
+              height: 20,
+            ),
+            AdminHomePageState.inIgnored
+                ? Row(
+                    children: [
+                      Text(
+                        "Reason: ",
+                        style: TextStyle(
+                            color: Colors.red,
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold),
+                      ),
+                      Text(comment.reason),
+                    ],
+                  )
+                : SizedBox(),
             Divider(
               color: Colors.black38,
               height: 20,

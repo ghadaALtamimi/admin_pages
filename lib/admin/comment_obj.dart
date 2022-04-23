@@ -11,18 +11,21 @@ class CommentObj {
   int unethical;
   int IDontLike;
   int no_reports;
+  bool Ignore;
+  String reason;
   List<String> user_already_reported;
-  CommentObj({
-    this.commentRef,
-    this.commentOwner,
-    this.recipeId,
-    this.commentDate,
-    this.commentText,
-    this.bullying,
-    this.fraudulent,
-    this.unethical,
-    this.IDontLike,
-    this.no_reports,
-    this.user_already_reported,
-  });
+  CommentObj(
+      {this.commentRef,
+      this.commentOwner,
+      this.recipeId,
+      this.commentDate,
+      this.commentText,
+      this.bullying,
+      this.fraudulent,
+      this.unethical,
+      this.IDontLike,
+      this.no_reports,
+      this.user_already_reported,
+      this.Ignore,
+      this.reason});
 }
