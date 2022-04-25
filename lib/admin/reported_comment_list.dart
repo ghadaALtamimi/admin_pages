@@ -148,7 +148,7 @@ class CommentListState extends State<ReportedCommentList> {
               child: Text(
                 "Cancel",
                 style: TextStyle(
-                  color: Colors.orange,
+                  color: Color(0xFFeb6d44),
                 ),
               ),
               onPressed: () {
@@ -168,7 +168,7 @@ class CommentListState extends State<ReportedCommentList> {
                     Navigator.pop(context);
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
-                          content: Text("you did not write reason to ignore"),
+                          content: Text("You did not write reason to ignore"),
                           backgroundColor: Theme.of(context).errorColor),
                     );
                   } else {
@@ -227,7 +227,7 @@ class CommentListState extends State<ReportedCommentList> {
                           return AlertDialog(
                             title: Column(
                               children: [
-                                Text('write the reason of ignoring'),
+                                Text('Write the reason of ignoring'),
                                 SizedBox(
                                   height: 20,
                                 ),
@@ -323,40 +323,29 @@ class CommentListState extends State<ReportedCommentList> {
               indent: 20,
               endIndent: 20,
             ),
-            Padding(
-              padding: const EdgeInsets.only(
-                left: 60,
-              ),
-              child: Row(
-                children: [
-                  Text("number of reports: " + "${comment.no_reports}"),
-                  SizedBox(
-                    width: 20,
-                  ),
-                  Text("bullying: " + " ${comment.bullying}"),
-                ],
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Text("Number of reports: " + "${comment.no_reports}"),
+                Text("Bullying: " + " ${comment.bullying}"),
+              ],
             ),
             SizedBox(
               height: 20,
             ),
-            Padding(
-              padding: const EdgeInsets.only(
-                left: 40,
-              ),
-              child: Row(
-                children: [
-                  Text("fraudulent: " + "${comment.fraudulent}"),
-                  SizedBox(
-                    width: 20,
-                  ),
-                  Text("do not like: " + " ${comment.IDontLike}"),
-                  SizedBox(
-                    width: 20,
-                  ),
-                  Text("unethical: " + " ${comment.unethical}"),
-                ],
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Text("Fraudulent: " + "${comment.fraudulent}"),
+                SizedBox(
+                  width: 20,
+                ),
+                Text("Do not like: " + " ${comment.IDontLike}"),
+                SizedBox(
+                  width: 20,
+                ),
+                Text("Unethical: " + " ${comment.unethical}"),
+              ],
             ),
             SizedBox(
               height: 20,

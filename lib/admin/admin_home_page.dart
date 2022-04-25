@@ -89,7 +89,7 @@ class AdminHomePageState extends State<AdminHomePage> {
                     MaterialPageRoute(
                       builder: (ccontext) => Scaffold(
                         appBar: AppBar(
-                            title: Text("dd"),
+                            title: Text("Ignored reported"),
                             backgroundColor: Color(0xFFeb6d44),
                             leading: IconButton(
                               onPressed: () {

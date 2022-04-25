@@ -117,7 +117,7 @@ class ReportedAccountListState extends State<ReportedAccountList> {
               child: Text(
                 "Cancel",
                 style: TextStyle(
-                  color: Color.fromARGB(214, 255, 153, 0),
+                  color: Color(0xFFeb6d44),
                 ),
               ),
               onPressed: () {
@@ -174,46 +174,12 @@ class ReportedAccountListState extends State<ReportedAccountList> {
 //------------------------------
   }
 
-  Widget IgnorIcon(String accountRef) {
-    final FirebaseAuth usId = FirebaseAuth.instance;
-    final _currentUser = usId.currentUser.uid;
+  // Widget IgnorIcon(String accountRef) {
+  //   final FirebaseAuth usId = FirebaseAuth.instance;
+  //   final _currentUser = usId.currentUser.uid;
 
-    return !AdminHomePageState.inIgnored
-        ? Row(
-            children: [
-              TextButton(
-                  onPressed: () {
-                    showDialog(
-                        barrierDismissible: false,
-                        context: context,
-                        builder: (context) {
-                          return AlertDialog(
-                            title: Column(
-                              children: [
-                                Text('write the reason of ignoring'),
-                                SizedBox(
-                                  height: 20,
-                                ),
-                                IgnoreAccount(accountRef, context),
-                                SizedBox(
-                                  height: 20,
-                                ),
-                              ],
-                            ),
-                          );
-                        });
-                  },
-                  child: Text(
-                    "Ignore",
-                    style: TextStyle(
-                      color: Color(0xFFeb6d44),
-                      fontSize: 14,
-                    ),
-                  ))
-            ],
-          )
-        : SizedBox();
-  }
+  //   return
+  // }
 
   void initState() {
     super.initState();
@@ -236,27 +202,53 @@ class ReportedAccountListState extends State<ReportedAccountList> {
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
                   ),
                 ),
-                SizedBox(
-                  width: 40,
-                ),
-
+                Spacer(),
+                !AdminHomePageState.inIgnored
+                    ? Row(
+                        children: [
+                          TextButton(
+                              onPressed: () {
+                                showDialog(
+                                    barrierDismissible: false,
+                                    context: context,
+                                    builder: (context) {
+                                      return AlertDialog(
+                                        title: Column(
+                                          children: [
+                                            Text(
+                                                'write the reason of ignoring'),
+                                            SizedBox(
+                                              height: 20,
+                                            ),
+                                            IgnoreAccount(
+                                                account.userId, context),
+                                            SizedBox(
+                                              height: 20,
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                    });
+                              },
+                              child: Text(
+                                "Ignore",
+                                style: TextStyle(
+                                  color: Color(0xFFeb6d44),
+                                  fontSize: 14,
+                                ),
+                              )),
+                        ],
+                      )
+                    : SizedBox(),
                 //************************************ */
-                IgnorIcon(account.userId)
+                //IgnorIcon(account.userId)
                 //*************************************** */
               ],
-            ),
-            SizedBox(
-              height: 20,
             ),
             Padding(
               padding: const EdgeInsets.only(left: 30),
               child: Row(
-                children: [
-                  Text(
-                    "Number of reports: " + "${account.no_reports}",
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-                  ),
-                ],
+                children: [],
               ),
             ),
             Divider(
@@ -265,39 +257,28 @@ class ReportedAccountListState extends State<ReportedAccountList> {
               indent: 30,
               endIndent: 30,
             ),
-            Padding(
-              padding: const EdgeInsets.only(
-                left: 90,
-              ),
-              child: Row(
-                children: [
-                  Text("Bullying: " + " ${account.bullying}"),
-                  SizedBox(
-                    width: 20,
-                  ),
-                  Text("Fraudulent: " + "${account.fraudulent}"),
-                ],
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Text(
+                  "Number of reports: " + "${account.no_reports}",
+                ),
+                Text("Bullying: " + " ${account.bullying}"),
+              ],
             ),
             SizedBox(
               height: 20,
             ),
-            Padding(
-              padding: const EdgeInsets.only(
-                left: 90,
-              ),
-              child: Row(
-                children: [
-                  Text("Do not like: " + " ${account.IDontLike}"),
-                  SizedBox(
-                    width: 20,
-                  ),
-                  Text("Unethical: " + " ${account.unethical}"),
-                ],
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Text("Do not like: " + " ${account.IDontLike}"),
+                Text("Unethical: " + " ${account.unethical}"),
+                Text("Fraudulent: " + "${account.fraudulent}"),
+              ],
             ),
             SizedBox(
-              height: 20,
+              height: 10,
             ),
             AdminHomePageState.inIgnored
                 ? Row(
