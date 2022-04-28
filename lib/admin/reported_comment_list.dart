@@ -13,6 +13,9 @@ class ReportedCommentList extends StatefulWidget {
 }
 
 class CommentListState extends State<ReportedCommentList> {
+  GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
+  TextEditingController reasonTextFieldController = TextEditingController();
   List<CommentObj> comments = [];
 
   List<CommentObj> ignoredComments = [];
@@ -80,7 +83,7 @@ class CommentListState extends State<ReportedCommentList> {
             bullying: doc["bullying"],
             no_reports: doc["no_reports"],
             Ignore: false,
-            reason: doc["reson"],
+            reason: doc["reason"],
           ));
         }
       });
@@ -119,23 +122,46 @@ class CommentListState extends State<ReportedCommentList> {
   }
 
   Widget IgnoreComment(var key, BuildContext context) {
-    print("-----------inside method_");
-    print(key);
-//------------------------------
-
-    String resone;
-
-    return Column(
-      children: [
-        TextFormField(
-          onChanged: (value) {
-            resone = value;
-          },
+    String reason;
+    return AlertDialog(
+      //backgroundColor: Theme.of(context).backgroundColor,
+      title: Center(
+        child: Text(
+          "Enter the reason of ignoring",
+          style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Theme.of(context).accentColor),
         ),
-        //--------------------------add or cancel
-        SizedBox(
-          height: 30,
+      ),
+//--------------------------------------
+      content: new SingleChildScrollView(
+        child: Column(
+          children: [
+            Form(
+              key: formKey,
+              child: TextFormField(
+                key: ValueKey("reasone"),
+                controller: reasonTextFieldController,
+                decoration: InputDecoration(
+                    // errorText:
+                    //     _isEmptyCookbookTitle ? 'title can not be empty' : null,
+                    ),
+                validator: (value) {
+                  if (value == null || value == '' || value.isEmpty)
+                    return 'Reason can not be empty ';
+                  else
+                    return null;
+                },
+                onChanged: (value) {
+                  reason = value;
+                },
+              ),
+            ),
+          ],
         ),
+      ),
+
+      actions: [
         Row(
           children: [
             RaisedButton(
@@ -151,7 +177,8 @@ class CommentListState extends State<ReportedCommentList> {
                   color: Color(0xFFeb6d44),
                 ),
               ),
-              onPressed: () {
+              onPressed: () async {
+                reasonTextFieldController.clear();
                 Navigator.of(context).pop();
               },
             ),
@@ -163,14 +190,10 @@ class CommentListState extends State<ReportedCommentList> {
                   "Ignore",
                 ),
                 onPressed: () {
-                  // check if the ingredient is already exist do not add it to the shooping
-                  if (resone == null) {
-                    Navigator.pop(context);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                          content: Text("You did not write reason to ignore"),
-                          backgroundColor: Theme.of(context).errorColor),
-                    );
+                  reason = reasonTextFieldController
+                      .text; // check if the ingredient is already exist do not add it to the shooping
+                  if (!formKey.currentState.validate()) {
+                    print(formKey.currentState.validate());
                   } else {
                     // -------- Add the ingredant to the shoping list------------
 
@@ -178,19 +201,23 @@ class CommentListState extends State<ReportedCommentList> {
                     FirebaseFirestore.instance
                         .collection("admin")
                         .doc("reportes")
-                        .collection("ReportedComment")
+                        .collection("ReportedAcount")
                         .doc(key)
                         .update({
                       "Ignore": true,
-                      "reson": resone,
+                      "reason": reason,
                     });
+                    print("apdated");
+
 //-----
                     Navigator.pop(context);
+
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
-                          content: Text("Comment ignored successfuly"),
+                          content: Text("Reported ignored successfuly"),
                           backgroundColor: Colors.green),
                     );
+                    reasonTextFieldController.clear();
                   }
                 }),
             // ]);
@@ -198,8 +225,6 @@ class CommentListState extends State<ReportedCommentList> {
         )
       ],
     );
-
-//------------------------------
   }
 
   Widget repordelIcon(String commentRef) {
@@ -224,20 +249,7 @@ class CommentListState extends State<ReportedCommentList> {
                         barrierDismissible: false,
                         context: context,
                         builder: (context) {
-                          return AlertDialog(
-                            title: Column(
-                              children: [
-                                Text('Write the reason of ignoring'),
-                                SizedBox(
-                                  height: 20,
-                                ),
-                                IgnoreComment(commentRef, context),
-                                SizedBox(
-                                  height: 20,
-                                ),
-                              ],
-                            ),
-                          );
+                          return IgnoreComment(commentRef, context);
                         });
                   },
                   child: Text(
@@ -251,7 +263,9 @@ class CommentListState extends State<ReportedCommentList> {
           )
         : SizedBox();
   }
+//-------------
 
+//----------
 //********************************************************* */
 //--------------------------------------------------------------------------
 // ------------------- Design of each comment -----------------

@@ -13,6 +13,9 @@ class ReportedAccountList extends StatefulWidget {
 }
 
 class ReportedAccountListState extends State<ReportedAccountList> {
+  GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
+  TextEditingController reasonTextFieldController = TextEditingController();
   List<ReprtedAccount> accounts = [];
   List<ReprtedAccount> ignoredAccounts = [];
   CollectionReference databaseRef;
@@ -73,7 +76,7 @@ class ReportedAccountListState extends State<ReportedAccountList> {
             bullying: doc["bullying"],
             no_reports: doc["no_reports"],
             Ignore: true,
-            reason: doc["reson"],
+            reason: doc["reason"],
           ));
         }
       });
@@ -87,24 +90,46 @@ class ReportedAccountListState extends State<ReportedAccountList> {
   }
 
   Widget IgnoreAccount(var key, BuildContext context) {
-    print("-----------inside method_");
-    print(key);
-//------------------------------
+    String reasone;
+    return AlertDialog(
+      //backgroundColor: Theme.of(context).backgroundColor,
+      title: Center(
+        child: Text(
+          "Write the reason of ignored",
+          style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Theme.of(context).accentColor),
+        ),
+      ),
+//--------------------------------------
+      content: new SingleChildScrollView(
+        child: Column(
+          children: [
+            Form(
+              key: formKey,
+              child: TextFormField(
+                key: ValueKey("reasone"),
+                controller: reasonTextFieldController,
+                decoration: InputDecoration(
+                    // errorText:
+                    //     _isEmptyCookbookTitle ? 'title can not be empty' : null,
+                    ),
+                validator: (value) {
+                  if (value == null || value == '' || value.isEmpty)
+                    return 'Reason can not be empty ';
+                  else
+                    return null;
+                },
+                onChanged: (value) {
+                  reasone = value;
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
 
-    String resone;
-    TextEditingController textController;
-    return Column(
-      children: [
-        TextFormField(
-          controller: textController,
-          onChanged: (value) {
-            resone = value;
-          },
-        ),
-        //--------------------------add or cancel
-        SizedBox(
-          height: 30,
-        ),
+      actions: [
         Row(
           children: [
             RaisedButton(
@@ -120,7 +145,8 @@ class ReportedAccountListState extends State<ReportedAccountList> {
                   color: Color(0xFFeb6d44),
                 ),
               ),
-              onPressed: () {
+              onPressed: () async {
+                reasonTextFieldController.clear();
                 Navigator.of(context).pop();
               },
             ),
@@ -132,14 +158,10 @@ class ReportedAccountListState extends State<ReportedAccountList> {
                   "Ignore",
                 ),
                 onPressed: () {
-                  // check if the ingredient is already exist do not add it to the shooping
-                  if (resone == null) {
-                    Navigator.pop(context);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                          content: Text("you did not write reason to ignore"),
-                          backgroundColor: Theme.of(context).errorColor),
-                    );
+                  reasone = reasonTextFieldController
+                      .text; // check if the ingredient is already exist do not add it to the shooping
+                  if (!formKey.currentState.validate()) {
+                    print(formKey.currentState.validate());
                   } else {
                     // -------- Add the ingredant to the shoping list------------
 
@@ -151,7 +173,7 @@ class ReportedAccountListState extends State<ReportedAccountList> {
                         .doc(key)
                         .update({
                       "Ignore": true,
-                      "reson": resone,
+                      "reason": reasone,
                     });
                     print("apdated");
 
@@ -163,6 +185,7 @@ class ReportedAccountListState extends State<ReportedAccountList> {
                           content: Text("Reported ignored successfuly"),
                           backgroundColor: Colors.green),
                     );
+                    reasonTextFieldController.clear();
                   }
                 }),
             // ]);
@@ -170,16 +193,7 @@ class ReportedAccountListState extends State<ReportedAccountList> {
         )
       ],
     );
-
-//------------------------------
   }
-
-  // Widget IgnorIcon(String accountRef) {
-  //   final FirebaseAuth usId = FirebaseAuth.instance;
-  //   final _currentUser = usId.currentUser.uid;
-
-  //   return
-  // }
 
   void initState() {
     super.initState();
@@ -212,22 +226,24 @@ class ReportedAccountListState extends State<ReportedAccountList> {
                                     barrierDismissible: false,
                                     context: context,
                                     builder: (context) {
-                                      return AlertDialog(
-                                        title: Column(
-                                          children: [
-                                            Text(
-                                                'write the reason of ignoring'),
-                                            SizedBox(
-                                              height: 20,
-                                            ),
-                                            IgnoreAccount(
-                                                account.userId, context),
-                                            SizedBox(
-                                              height: 20,
-                                            ),
-                                          ],
-                                        ),
-                                      );
+                                      return IgnoreAccount(
+                                          account.userId, context);
+                                      // AlertDialog(
+                                      //   title: Column(
+                                      //     children: [
+                                      //       Text(
+                                      //           'write the reason of ignoring'),
+                                      //       SizedBox(
+                                      //         height: 20,
+                                      //       ),
+                                      //       IgnoreAccount(
+                                      //           account.userId, context),
+                                      //       SizedBox(
+                                      //         height: 20,
+                                      //       ),
+                                      //     ],
+                                      //   ),
+                                      // );
                                     });
                               },
                               child: Text(
