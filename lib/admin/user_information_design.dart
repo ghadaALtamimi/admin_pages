@@ -3,27 +3,9 @@ import 'package:flutter/material.dart';
 
 class UserInformationDesign extends StatelessWidget {
   String userName;
-  String userImage;
+  //String userImage;
 
-  UserInformationDesign(this.userName, this.userImage);
-
-  // Widget buildImage() {
-  //   final image =
-  //       userImage == "noImage" || userImage.isEmpty || userImage == null
-  //           ? AssetImage("assets/images/defaultUser.png") // NEW
-  //           : NetworkImage(userImage);
-
-  //   return InkResponse(
-  //       child: Container(
-  //         margin: EdgeInsets.only(left: 7),
-  //         width: 45,
-  //         height: 55,
-  //         decoration: BoxDecoration(
-  //             shape: BoxShape.circle,
-  //             image: DecorationImage(fit: BoxFit.fill, image: image)),
-  //       ),
-  //       onTap: () {});
-  // }
+  UserInformationDesign(this.userName);
 
   @override
   Widget build(BuildContext context) {

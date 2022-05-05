@@ -20,7 +20,7 @@ class CommentListState extends State<ReportedCommentList> {
 
   List<CommentObj> ignoredComments = [];
 
-  CollectionReference databaseRef;
+  CollectionReference _databaseRef;
   static String autherId;
   static String recipeId;
   @override
@@ -44,12 +44,12 @@ class CommentListState extends State<ReportedCommentList> {
 
   getData() {
     // get data from database
-    databaseRef = FirebaseFirestore.instance
+    _databaseRef = FirebaseFirestore.instance
         .collection("admin")
         .doc("reportes")
         .collection("ReportedComment");
     setState(() {});
-    databaseRef.snapshots().listen((data) {
+    _databaseRef.snapshots().listen((data) {
       comments.clear();
       ignoredComments.clear();
       data.docs.forEach((doc) {
@@ -227,7 +227,7 @@ class CommentListState extends State<ReportedCommentList> {
     );
   }
 
-  Widget repordelIcon(String commentRef) {
+  Widget deleteIcon(String commentRef) {
     final FirebaseAuth usId = FirebaseAuth.instance;
     final _currentUser = usId.currentUser.uid;
 
@@ -320,7 +320,7 @@ class CommentListState extends State<ReportedCommentList> {
                       ],
                     );
                   },
-                  child: repordelIcon(comment.commentRef),
+                  child: deleteIcon(comment.commentRef),
                 )
                 //*************************************** */
               ],

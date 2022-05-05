@@ -29,19 +29,18 @@ class AuthForm extends StatefulWidget {
 class _AuthFormState extends State<AuthForm> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _pass = TextEditingController();
-  final TextEditingController _confirmPass = TextEditingController();
+  //final TextEditingController _confirmPass = TextEditingController();
 
-  bool _isSignUp = true;
-  bool _isDefaultImage = false;
+  //bool _isSignUp = true;
 
   var _userEmail = "";
-  var _userName = "";
+  // var _userName = "";
   var _userPassword = "";
-  File _userImageFile;
+  // File _userImageFile;
 
-  void _pickedImage(File image) {
-    _userImageFile = image;
-  }
+  // void _pickedImage(File image) {
+  //   _userImageFile = image;
+  // }
 
   void _trySubmit() async {
     _formKey.currentState
@@ -72,14 +71,6 @@ class _AuthFormState extends State<AuthForm> {
     RegExp regExp = new RegExp(pattern);
 
     return regExp.hasMatch(email);
-  }
-
-  bool _isValiedUsername(String username) {
-    String pattern = r'^[A-Za-z0-9]+(?:[_-][A-Za-z0-9]+)*$';
-
-    RegExp regExp = new RegExp(pattern);
-
-    return regExp.hasMatch(username);
   }
 
   bool _isValiedPassword(String password) {

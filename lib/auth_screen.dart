@@ -36,18 +36,8 @@ class AuthScreenState extends State<AuthScreen> {
         email: email,
         password: password,
       );
-      //here we can check the admin
-      // if (email == 'admin@admin.admin') {
-      //   setState(() {
-      //     isAdmin = true;
-      //   });
-      //   Navigator.of(context).pushReplacement(
-      //     MaterialPageRoute(
-      //       builder: (context) => AdminHomePage(),
-      //     ),
-      //   );
-      // } else {
-      // to move the user to the profile page (Mainpages) after he login successfully
+
+      // to move the user to the admin page (adminHomepage) after he login successfully
       setState(() {
         isAdmin = false;
       });

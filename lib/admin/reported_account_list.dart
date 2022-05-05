@@ -16,18 +16,17 @@ class ReportedAccountListState extends State<ReportedAccountList> {
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   TextEditingController reasonTextFieldController = TextEditingController();
-  List<ReprtedAccount> accounts = [];
-  List<ReprtedAccount> ignoredAccounts = [];
-  CollectionReference databaseRef;
-  static String autherId;
-  static String recipeId;
+  List<ReprtedAccount> _accounts = [];
+  List<ReprtedAccount> _ignoredAccounts = [];
+  CollectionReference _databaseRef;
+
   @override
   Widget build(BuildContext context) {
     if (AdminHomePageState.inIgnored) {
       return ListView(
           shrinkWrap: true,
           padding: EdgeInsets.all(12),
-          children: [...ignoredAccounts.map(designAccountList).toList()]
+          children: [..._ignoredAccounts.map(designAccountList).toList()]
               .reversed
               .toList());
     } else {
@@ -35,27 +34,27 @@ class ReportedAccountListState extends State<ReportedAccountList> {
           shrinkWrap: true,
           padding: EdgeInsets.all(12),
           children: [
-            ...accounts.map(designAccountList).toList(),
+            ..._accounts.map(designAccountList).toList(),
           ].reversed.toList());
     }
   }
 
   getData() {
     // get data from database
-    databaseRef = FirebaseFirestore.instance
+    _databaseRef = FirebaseFirestore.instance
         .collection("admin")
         .doc("reportes")
         .collection("ReportedAcount");
     setState(() {});
-    databaseRef.snapshots().listen((data) {
-      accounts.clear();
-      ignoredAccounts.clear();
+    _databaseRef.snapshots().listen((data) {
+      _accounts.clear();
+      _ignoredAccounts.clear();
 
       data.docs.forEach((doc) {
         // add each account doc in database to the list to show them in the screen
 
         if (doc["Ignore"] == false) {
-          accounts.add(ReprtedAccount(
+          _accounts.add(ReprtedAccount(
             username: doc["username"],
             userId: doc["userId"],
             unethical: doc["unethical"],
@@ -67,7 +66,7 @@ class ReportedAccountListState extends State<ReportedAccountList> {
             reason: "",
           ));
         } else {
-          ignoredAccounts.add(ReprtedAccount(
+          _ignoredAccounts.add(ReprtedAccount(
             username: doc["username"],
             userId: doc["userId"],
             unethical: doc["unethical"],
@@ -82,8 +81,8 @@ class ReportedAccountListState extends State<ReportedAccountList> {
       });
       if (this.mounted) {
         setState(() {
-          accounts;
-          ignoredAccounts;
+          _accounts;
+          _ignoredAccounts;
         });
       }
     });
