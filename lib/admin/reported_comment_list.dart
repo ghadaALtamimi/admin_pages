@@ -20,7 +20,7 @@ class CommentListState extends State<ReportedCommentList> {
 
   List<CommentObj> ignoredComments = [];
 
-  CollectionReference _databaseRef;
+  CollectionReference databaseRef;
   static String autherId;
   static String recipeId;
   @override
@@ -44,12 +44,12 @@ class CommentListState extends State<ReportedCommentList> {
 
   getData() {
     // get data from database
-    _databaseRef = FirebaseFirestore.instance
+    databaseRef = FirebaseFirestore.instance
         .collection("admin")
         .doc("reportes")
         .collection("ReportedComment");
     setState(() {});
-    _databaseRef.snapshots().listen((data) {
+    databaseRef.snapshots().listen((data) {
       comments.clear();
       ignoredComments.clear();
       data.docs.forEach((doc) {
@@ -124,23 +124,22 @@ class CommentListState extends State<ReportedCommentList> {
   Widget IgnoreComment(var key, BuildContext context) {
     String reason;
     return AlertDialog(
-      //backgroundColor: Theme.of(context).backgroundColor,
       title: Center(
         child: Text(
-          "Enter the reason of ignoring",
+          "Write the reason of ignored",
           style: TextStyle(
               fontWeight: FontWeight.bold,
               color: Theme.of(context).accentColor),
         ),
       ),
 //--------------------------------------
-      content: new SingleChildScrollView(
+      content: SingleChildScrollView(
         child: Column(
           children: [
             Form(
               key: formKey,
               child: TextFormField(
-                key: ValueKey("reasone"),
+                key: ValueKey("reason"),
                 controller: reasonTextFieldController,
                 decoration: InputDecoration(
                     // errorText:
@@ -190,6 +189,7 @@ class CommentListState extends State<ReportedCommentList> {
                   "Ignore",
                 ),
                 onPressed: () {
+                  print(reasonTextFieldController.text);
                   reason = reasonTextFieldController
                       .text; // check if the ingredient is already exist do not add it to the shooping
                   if (!formKey.currentState.validate()) {
@@ -201,7 +201,7 @@ class CommentListState extends State<ReportedCommentList> {
                     FirebaseFirestore.instance
                         .collection("admin")
                         .doc("reportes")
-                        .collection("ReportedAcount")
+                        .collection("ReportedComment")
                         .doc(key)
                         .update({
                       "Ignore": true,
