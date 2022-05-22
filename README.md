@@ -3,8 +3,9 @@
 InstaYum
 
 Is a mobile application 
-That saves recipes in an organized manner.
-Our product is an English mobile application with many tools to help cooking enthusiasts, like a shopping list and meals plan.... 
+That helps admins to Help monitor comments, accounts, etc.
+Our product is an English mobile applicationز
+
 
 Technologices:
 we use Dart langague and flutter framework version 2.12.0 to develop our application. As well as, we used some libraries like firebase, image picker, flutter rating bar, and flutter dialogflow.
